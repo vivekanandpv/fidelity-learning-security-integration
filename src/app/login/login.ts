@@ -16,6 +16,7 @@ import { User } from '../user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
+import { toast } from 'ngx-sonner';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -68,9 +69,13 @@ export class Login {
           next: (r) => {
             console.log('Login Response', r);
             this.userService.saveToken(r.accessToken);
+            toast.success('Login success');
             this.router.navigateByUrl(this.returnUrl());
           },
-          error: (e) => console.error(e),
+          error: (e) => {
+            console.error(e);
+            toast.error('Login failed');
+          },
         });
     } else {
       console.log('Cannot submit an invalid form');

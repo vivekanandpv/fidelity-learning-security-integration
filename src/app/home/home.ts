@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Rest } from '../rest';
+import { toast } from 'ngx-sonner';
 
 @Component({
   selector: 'app-home',
@@ -13,13 +14,25 @@ export class Home {
 
   getCart() {
     this.rest.makeGet('https://dummyjson.com/cart').subscribe({
-      next: (r) => console.log('Cart Response', r),
+      next: (r) => {
+        console.log('Cart Response', r);
+        toast.success('Cart loaded successfully');
+      },
+      error: (e) => {
+        toast.error('Cart load failed');
+      },
     });
   }
 
   getProducts() {
     this.rest.makeGet('https://dummyjson.com/products').subscribe({
-      next: (r) => console.log('Products Response', r),
+      next: (r) => {
+        console.log('Products Response', r);
+        toast.success('Products loaded successfully');
+      },
+      error: (e) => {
+        toast.error('Products load failed');
+      },
     });
   }
 }

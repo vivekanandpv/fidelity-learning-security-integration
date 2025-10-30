@@ -3,10 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { RouterOutlet } from '@angular/router';
 import { Navbar } from './navbar/navbar';
+import { NgxSonnerToaster } from 'ngx-sonner';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, MatCardModule, MatButtonModule, Navbar],
+  imports: [RouterOutlet, MatCardModule, MatButtonModule, Navbar, NgxSonnerToaster],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
