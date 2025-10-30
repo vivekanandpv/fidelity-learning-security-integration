@@ -11,12 +11,18 @@ import { MatButtonModule } from '@angular/material/button';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { Rest } from '../rest';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
+}
+
+interface LoginRequest {
+  username: string;
+  password: string;
 }
 
 @Component({
@@ -28,6 +34,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class Login {
   fb = inject(FormBuilder);
   matcher = new MyErrorStateMatcher();
+  rest = inject(Rest);
 
   loginForm = this.fb.group({
     username: ['', [Validators.required]],
@@ -44,7 +51,13 @@ export class Login {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      console.log('form submitted', this.loginForm.value);
+      const formData = this.loginForm.value as LoginRequest;
+      this.rest
+        .makePost<LoginRequest, any>('https://dummyjson.com/auth/login', formData)
+        .subscribe({
+          next: (r) => console.log('Login Response', r),
+          error: (e) => console.error(e),
+        });
     } else {
       console.log('Cannot submit an invalid form');
     }
