@@ -21,6 +21,9 @@
     <button matButton="outlined" routerLink="">Home</button>
   </mat-list-item>
   <mat-list-item role="listitem">
+    <button matButton="outlined" routerLink="playground">Playground</button>
+  </mat-list-item>
+  <mat-list-item role="listitem">
     <button matButton="outlined" (click)="handleClick()">
       {{ userService.token() ? `Hi, ${userService.username()}! Logout` : 'Login' }}
     </button>

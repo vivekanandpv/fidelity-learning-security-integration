@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormControl,
@@ -13,6 +13,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Rest } from '../rest';
 import { User } from '../user';
+import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -33,10 +36,15 @@ interface LoginRequest {
   styleUrl: './login.scss',
 })
 export class Login {
-  fb = inject(FormBuilder);
-  matcher = new MyErrorStateMatcher();
-  rest = inject(Rest);
-  userService = inject(User);
+  private readonly fb = inject(FormBuilder);
+  private readonly matcher = new MyErrorStateMatcher();
+  private readonly rest = inject(Rest);
+  private readonly userService = inject(User);
+  private readonly ar = inject(ActivatedRoute);
+  private readonly returnUrl = computed(
+    toSignal(this.ar.queryParams.pipe(map((p) => p['returnUrl'])))
+  );
+  private readonly router = inject(Router);
 
   loginForm = this.fb.group({
     username: ['', [Validators.required]],
@@ -60,6 +68,7 @@ export class Login {
           next: (r) => {
             console.log('Login Response', r);
             this.userService.saveToken(r.accessToken);
+            this.router.navigateByUrl(this.returnUrl());
           },
           error: (e) => console.error(e),
         });
