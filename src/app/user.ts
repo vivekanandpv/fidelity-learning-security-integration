@@ -1,4 +1,5 @@
 import { computed, Injectable, signal } from '@angular/core';
+import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,13 @@ export class User {
 
   get token() {
     return computed(() => this._token());
+  }
+
+  get username() {
+    return computed(() => {
+      const t = this._token();
+      return t ? (jwtDecode(t) as any).username : null;
+    });
   }
 
   removeToken() {
