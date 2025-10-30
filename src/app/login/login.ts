@@ -12,6 +12,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Rest } from '../rest';
+import { User } from '../user';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -35,6 +36,7 @@ export class Login {
   fb = inject(FormBuilder);
   matcher = new MyErrorStateMatcher();
   rest = inject(Rest);
+  userService = inject(User);
 
   loginForm = this.fb.group({
     username: ['', [Validators.required]],
@@ -55,7 +57,10 @@ export class Login {
       this.rest
         .makePost<LoginRequest, any>('https://dummyjson.com/auth/login', formData)
         .subscribe({
-          next: (r) => console.log('Login Response', r),
+          next: (r) => {
+            console.log('Login Response', r);
+            this.userService.saveToken(r.accessToken);
+          },
           error: (e) => console.error(e),
         });
     } else {
