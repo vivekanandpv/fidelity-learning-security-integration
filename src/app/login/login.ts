@@ -38,7 +38,7 @@ interface LoginRequest {
 })
 export class Login {
   private readonly fb = inject(FormBuilder);
-  private readonly matcher = new MyErrorStateMatcher();
+  matcher = new MyErrorStateMatcher();
   private readonly rest = inject(Rest);
   private readonly userService = inject(User);
   private readonly ar = inject(ActivatedRoute);
